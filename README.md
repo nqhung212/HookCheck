@@ -2,6 +2,24 @@
 
 A webhook inspection tool for developers and QA engineers. Create a temporary inbox, send an event, and inspect the original request alongside PASS/FAIL checks for the HTTP method, headers, and JSON fields.
 
+## Interface
+
+Screenshots from a local session using synthetic events. Access tokens are hidden.
+
+### Home
+
+![HookCheck home page](assets/home.png)
+
+### Validation rules
+
+![Rule editor requiring the JSON field /order/id](assets/expectations.png)
+
+### Request inspection
+
+| Missing required field | Valid request |
+| --- | --- |
+| ![Failed check for a missing order ID](assets/request-fail.png) | ![Passing check with both requests preserved in history](assets/request-pass.png) |
+
 ## Product scope
 
 - Temporary inboxes without account setup
