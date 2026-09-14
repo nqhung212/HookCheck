@@ -56,8 +56,3 @@ The recorded 14 September 2026 hardening checkpoint passed 26 automated tests wi
 
 These results describe a local development checkpoint. External transport verification, monitoring, off-host backups, and real user validation remain pending.
 
-## Availability
-
-Local MVP implemented. No public demo yet.
-
-[Portfolio](https://github.com/nqhung212/career-portfolio)
