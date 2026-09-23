@@ -2,6 +2,8 @@
 
 A webhook inspection tool for developers and QA engineers. Create a temporary inbox, send an event, and inspect the original request alongside PASS/FAIL checks for the HTTP method, headers, and JSON fields.
 
+**Status (23 September 2026):** The product is in private QA. There is no public hosted demo yet. This portfolio repository presents the interface and verified engineering work; the application source is maintained separately.
+
 ## Interface
 
 Screenshots from a local session using synthetic events. Access tokens are hidden.
@@ -40,7 +42,7 @@ Updating rules affects future requests; earlier receipts retain their original r
 
 ## Technology
 
-`TypeScript` `Node.js` `Fastify` `PostgreSQL` `Nunjucks` `JavaScript` `Docker` `Playwright` `GitHub Actions`
+`TypeScript` `Node.js` `Fastify` `PostgreSQL` `Nunjucks` `JavaScript` `Docker` `Playwright` `GitHub Actions` `Google Cloud` `Kubernetes` `Terraform`
 
 ## Engineering highlights
 
@@ -49,10 +51,11 @@ Updating rules affects future requests; earlier receipts retain their original r
 - Separate capabilities control sending events and inspecting or managing inbox data.
 - Captured content is displayed as inert text or base64; inbox expiry is checked after acquiring locks.
 - Local recovery checks exercise backup restoration and rollback between two application images with retained synthetic data.
+- An isolated cloud QA environment has exercised the API, browser journeys, exact-byte capture across seven methods, and persistence after VM restart.
 
 ## Verification
 
-The recorded 14 September 2026 hardening checkpoint passed 26 automated tests with no skips using real PostgreSQL and Chromium. Build, specification validation, raw HTTP probes, and local container, restore, and rollback checks also passed. The raw-stream investigation covered 140 method, content-type, and framing combinations.
+The latest recorded full local gate passed **71/71 automated checks with no skips** using real PostgreSQL and Chromium. Specification validation, typecheck, build, local container, restore, and rollback checks passed at that checkpoint. The raw-stream investigation covered 140 method, content-type, and framing combinations.
 
-These results describe a local development checkpoint. External transport verification, monitoring, off-host backups, and real user validation remain pending.
+The private cloud QA run also passed seven-method exact-byte transport checks, API acceptance, and three browser journeys. A later browser refresh was rate-limited after repeated QA runs; it was not counted as a fresh pass. These are engineering checks with synthetic data, not evidence of a public release or user adoption. Public availability and real user validation remain pending.
 
