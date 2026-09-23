@@ -69,61 +69,57 @@ Real HTTP checks have verified exact-byte capture across all seven methods. Brow
 <a id="tieng-viet"></a>
 ## Tiếng Việt
 
-**Xem chính xác webhook đã đến và kiểm tra theo quy tắc của bạn.** HookCheck cung cấp hộp thư tạm thời để lập trình viên tiếp nhận, xem và kiểm tra các yêu cầu HTTP ngay trên trình duyệt. Bạn có thể tạo hộp thư mà không cần tài khoản, gửi sự kiện và xem nội dung gốc cùng kết quả của từng quy tắc.
+**HookCheck cho bạn thấy chính xác webhook mà hệ thống nhận được.** Tạo một inbox tạm thời, gửi webhook tới URL riêng rồi xem request và kết quả đối chiếu với các quy tắc đã đặt. Tất cả trên trình duyệt, không cần tạo tài khoản.
 
-Ứng dụng đã được triển khai trên Google Cloud với HTTPS, lưu trữ dữ liệu, giám sát và quy trình phục hồi. Môi trường chỉ mở cho các phiên trình diễn được kiểm soát và máy chủ được tắt giữa các phiên. Kho lưu trữ công khai này giới thiệu sản phẩm và những giải pháp kỹ thuật; mã nguồn ứng dụng được quản lý riêng.
+HookCheck đã được triển khai trên Google Cloud với HTTPS, cơ sở dữ liệu, giám sát và sao lưu. Hệ thống chỉ mở trong các phiên trình diễn có kiểm soát; máy chủ được tắt giữa các phiên. Repo này giới thiệu sản phẩm và thiết kế kỹ thuật, còn mã nguồn ứng dụng được quản lý riêng.
 
-### Cách HookCheck hoạt động
+### Cách sử dụng
 
-1. **Tạo hộp thư.** Nhận địa chỉ gửi webhook riêng và lưu liên kết quản lý bí mật.
-2. **Đặt quy tắc.** Chọn phương thức HTTP, header hoặc trường JSON cần kiểm tra.
-3. **Gửi webhook.** Dùng hệ thống gửi hiện có, công cụ HTTP hoặc lệnh mẫu trong giao diện.
-4. **Xem và đối chiếu.** Đọc yêu cầu đã nhận, xem kết quả ĐẠT/KHÔNG ĐẠT, sửa bên gửi rồi so sánh lần gửi mới với lần trước.
+1. **Tạo inbox** để lấy URL nhận webhook và lưu liên kết quản lý.
+2. **Đặt quy tắc** cho phương thức HTTP, header hoặc trường JSON cần kiểm tra.
+3. **Gửi thử webhook** từ hệ thống của bạn, một công cụ HTTP hoặc lệnh mẫu có sẵn.
+4. **Xem kết quả**, chỉnh hệ thống gửi rồi thử lại. Cả hai lần gửi vẫn nằm trong lịch sử để bạn đối chiếu.
 
-Quy tắc mới chỉ áp dụng cho các yêu cầu đến sau. Mỗi yêu cầu cũ giữ nguyên phiên bản quy tắc và kết quả tại thời điểm được nhận.
+Khi quy tắc thay đổi, HookCheck chỉ dùng quy tắc mới cho những webhook đến sau. Kết quả đã ghi nhận trước đó được giữ nguyên.
 
 ### Giao diện
 
-Ảnh giao diện sử dụng dữ liệu mẫu; liên kết quản lý riêng tư không được hiển thị.
+Ảnh dưới đây sử dụng dữ liệu mẫu và không hiển thị liên kết quản lý.
 
-| Trang chủ | Trình chỉnh sửa quy tắc |
+| Trang chủ | Thiết lập quy tắc |
 | --- | --- |
 | ![Trang chủ HookCheck](assets/home.png) | ![Quy tắc kiểm tra trường JSON /order/id](assets/expectations.png) |
 
-| Thiếu mã đơn hàng | Sự kiện đã được sửa |
+| Thiếu mã đơn hàng | Sau khi bổ sung mã đơn hàng |
 | --- | --- |
-| ![Quy tắc JSON không đạt](assets/request-fail.png) | ![Quy tắc đạt; cả hai sự kiện vẫn có trong lịch sử](assets/request-pass.png) |
+| ![Kiểm tra không đạt vì thiếu mã đơn hàng](assets/request-fail.png) | ![Kiểm tra đạt; cả hai lần gửi vẫn có trong lịch sử](assets/request-pass.png) |
 
-### HookCheck làm được gì
+### Tính năng chính
 
-| Nhóm tính năng | Khả năng |
+- **Xem request thực nhận:** Phương thức HTTP, header, query string, IP người gửi và body đều có trong phần chi tiết. HookCheck vẫn lưu được body khi JSON sai định dạng hoặc nội dung là dữ liệu nhị phân.
+- **Kiểm tra theo quy tắc:** Có năm loại quy tắc: so khớp phương thức HTTP; kiểm tra header có tồn tại hoặc đúng giá trị; kiểm tra trường JSON có tồn tại hoặc đúng giá trị và kiểu dữ liệu. Từng quy tắc có kết quả riêng, kèm kết quả chung cho request.
+- **Theo dõi lịch sử:** Mỗi lần hệ thống gửi lại webhook tạo một bản ghi mới. Danh sách tự cập nhật; bạn có thể xem các trang cũ mà không bị xáo trộn khi có request mới.
+- **Quản lý inbox:** Xóa từng request hoặc cả inbox. Inbox tự hết hạn và có giới hạn về kích thước body, số request, dung lượng lưu trữ và tốc độ gửi.
+- **Tách quyền truy cập:** URL nhận webhook chỉ dùng để gửi. Muốn xem dữ liệu hoặc sửa quy tắc phải có liên kết quản lý riêng.
+- **Thao tác thuận tiện:** Sao chép URL nhận và lệnh gửi mẫu, chỉnh quy tắc trên trình duyệt, xem body dưới dạng văn bản hoặc base64.
+
+### Thiết kế kỹ thuật
+
+- **Giữ nguyên payload:** HookCheck đọc trực tiếp luồng HTTP và lưu chính xác từng byte của body qua cả bảy phương thức GET, HEAD, POST, PUT, PATCH, DELETE và OPTIONS. Dữ liệu nhị phân và JSON sai định dạng không bị biến đổi trong quá trình lưu.
+- **Kết quả không bị viết lại:** Mỗi request lưu kèm phiên bản quy tắc và kết quả tại thời điểm nhận. Khi bạn sửa quy tắc, lịch sử cũ vẫn phản ánh đúng lần kiểm tra ban đầu. Phân trang bằng cursor giữ thứ tự ổn định ngay cả khi có request mới.
+- **Ghi dữ liệu nhất quán:** PostgreSQL lưu request, kết quả kiểm tra và số lượt đã dùng trong hạn mức trong cùng một giao dịch. HookCheck chỉ trả lời thành công sau khi giao dịch hoàn tất, kể cả khi nhiều request cùng chạm giới hạn.
+- **Bảo vệ dữ liệu:** Quyền gửi và quyền quản lý dùng hai token độc lập; cơ sở dữ liệu chỉ lưu giá trị băm. Nội dung webhook được hiển thị như dữ liệu, không được thực thi. Ứng dụng và tác vụ cập nhật cơ sở dữ liệu cũng dùng các quyền riêng.
+- **Giới hạn rõ ràng:** HookCheck kiểm soát kích thước body, metadata, số request, dung lượng và tốc độ gửi. Inbox hết hạn sẽ ngừng hoạt động ngay, không phải chờ tác vụ dọn dẹp.
+
+### Triển khai và vận hành
+
+| Thành phần | Công nghệ và cách triển khai |
 | --- | --- |
-| Tiếp nhận | Nhận GET, HEAD, POST, PUT, PATCH, DELETE và OPTIONS, đồng thời giữ nguyên byte gốc của nội dung. Xem header, tham số truy vấn, IP nguồn và loại nội dung. JSON không hợp lệ hoặc dữ liệu nhị phân vẫn xem được. |
-| Quy tắc | Năm kiểu kiểm tra: phương thức HTTP bằng giá trị mong đợi; header tồn tại hoặc bằng giá trị mong đợi; trường JSON tồn tại hoặc bằng giá trị có kiểu xác định. Mỗi quy tắc có kết quả và lý do riêng. |
-| Lịch sử | Mỗi lần gửi lại là một bản ghi riêng. Yêu cầu mới tự xuất hiện; bạn vẫn có thể duyệt các trang cũ mà không mất vị trí. Sửa quy tắc không làm thay đổi kết quả đã lưu. |
-| Vòng đời hộp thư | Xóa từng yêu cầu hoặc cả hộp thư. Thời hạn sử dụng cùng các giới hạn về kích thước, số yêu cầu, dung lượng và tốc độ gửi giúp kiểm soát tài nguyên. |
-| Quyền truy cập | Quyền gửi webhook và quyền quản lý được tách biệt. Địa chỉ nhận không thể đọc dữ liệu; cần liên kết quản lý riêng tư để xem hoặc thay đổi hộp thư. |
-| Giao diện | Sao chép địa chỉ nhận và lệnh mẫu, chỉnh sửa quy tắc, xem nội dung dạng văn bản hoặc base64, cùng các trạng thái trống, đang tải và lỗi rõ ràng. |
+| Ứng dụng | TypeScript, Node.js, Fastify, Nunjucks và JavaScript trên trình duyệt |
+| Dữ liệu | PostgreSQL, migration theo phiên bản, vùng lưu trữ riêng và hạn mức được cập nhật bằng giao dịch |
+| Hạ tầng | Container, GitHub Actions, Terraform và Google Cloud; bản triển khai bằng Docker Compose dùng Caddy cho HTTPS |
+| Kubernetes | Một môi trường k3s độc lập dùng Traefik, PostgreSQL StatefulSet/PVC, service account và network policy |
+| Giám sát | Prometheus, Grafana và các quy tắc Alertmanager theo dõi ứng dụng, cơ sở dữ liệu và máy chủ trong mạng riêng |
+| Phục hồi | Sao lưu mã hóa trên cloud, khôi phục ở môi trường độc lập và quay về phiên bản ứng dụng trước mà vẫn giữ dữ liệu |
 
-### Kỹ thuật phía sau
-
-- **Giữ đúng dữ liệu gốc:** Bộ đọc luồng có giới hạn lưu các byte được truyền qua HTTP mà không phân tích rồi dựng lại nội dung. Cách này giữ được dữ liệu nhị phân, JSON không hợp lệ và nội dung của cả GET lẫn HEAD.
-- **Ghi dữ liệu nhất quán:** Giao dịch PostgreSQL lưu yêu cầu, phiên bản quy tắc, kết quả kiểm tra và mức sử dụng hạn mức cùng nhau. HookCheck chỉ xác nhận đã nhận sau khi giao dịch hoàn tất, kể cả khi nhiều yêu cầu cùng chạm giới hạn.
-- **Lịch sử không thay đổi:** Bản chụp quy tắc giữ nguyên kết quả của từng yêu cầu. Phân trang bằng cursor duy trì thứ tự khi có webhook mới hoặc bản ghi cũ bị xóa.
-- **Bảo vệ quyền truy cập:** Hai mã bí mật dùng cho gửi và quản lý độc lập với nhau; cơ sở dữ liệu chỉ lưu giá trị băm. Nội dung webhook được hiển thị như dữ liệu, không được thực thi; văn bản và base64 được phân biệt rõ.
-- **Tài nguyên có giới hạn:** Kích thước nội dung, metadata, số yêu cầu, dung lượng lưu trữ và tốc độ gửi đều được kiểm soát. Hộp thư hết hạn sẽ ngừng hoạt động ngay cả trước khi tác vụ dọn dẹp chạy.
-- **Phân quyền tối thiểu:** Ứng dụng và tác vụ migration dùng các vai trò cơ sở dữ liệu khác nhau. Container được giới hạn quyền ghi và truy cập mạng; bản triển khai Kubernetes bổ sung service account và chính sách chặn mặc định.
-- **Phát hành có thể kiểm chứng:** Đặc tả phiên bản và OpenAPI xác định hành vi; migration theo phiên bản cập nhật lược đồ; CI kiểm tra bản build bằng PostgreSQL, Chromium và lưu lượng HTTP thực trước khi triển khai.
-
-### Triển khai và phục hồi trên cloud
-
-| Thành phần | Cách triển khai |
-| --- | --- |
-| Ứng dụng | TypeScript, Node.js, Fastify, giao diện dựng bằng Nunjucks và JavaScript gọn nhẹ trên trình duyệt |
-| Dữ liệu | PostgreSQL với migration theo phiên bản, hạn mức theo giao dịch và vùng lưu trữ bền vững |
-| Phát hành | Image container, GitHub Actions và hạ tầng Google Cloud quản lý bằng Terraform; bản triển khai container dùng Caddy cho HTTPS |
-| Kubernetes | Môi trường k3s riêng dùng Traefik, PostgreSQL StatefulSet/PVC, service account và network policy |
-| Giám sát | Metrics Prometheus, dashboard Grafana và quy tắc Alertmanager cho ứng dụng, cơ sở dữ liệu và máy chủ trong mạng riêng |
-| Phục hồi | Bản sao lưu mã hóa trên cloud, môi trường khôi phục độc lập và quy trình trở về image ứng dụng trước mà vẫn giữ dữ liệu đã nhận |
-
-Các bài kiểm tra HTTP thực đã xác nhận dữ liệu được giữ nguyên qua cả bảy phương thức. Luồng trình duyệt, giao dịch cơ sở dữ liệu, cách ly container, dữ liệu sau khi khởi động lại, rollback và khôi phục đều đã được kiểm chứng bằng dữ liệu mẫu. Hộp thư tạm thời dành cho sự kiện thử nghiệm; không gửi bí mật sản xuất hoặc dữ liệu cá nhân vào đây.
+Bộ kiểm tra dùng HTTP thực để đối chiếu byte đã gửi với byte được lưu ở cả bảy phương thức. Các luồng trình duyệt, giao dịch PostgreSQL, cách ly container, dữ liệu sau khi khởi động lại máy chủ, rollback và khôi phục cũng đã được kiểm chứng bằng dữ liệu mẫu. HookCheck dành cho dữ liệu thử nghiệm; không gửi bí mật sản xuất hoặc dữ liệu cá nhân vào inbox tạm thời.
