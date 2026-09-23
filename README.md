@@ -11,7 +11,7 @@ A webhook debugging workspace for developers. Create an inbox, send a webhook, a
 
 ### Interface
 
-Screenshots from a local session using synthetic events. Access tokens are hidden.
+Screenshots use sample events. Management links contain access credentials, so they are not shown.
 
 #### Home
 
@@ -66,7 +66,7 @@ HookCheck giúp lập trình viên tiếp nhận và kiểm tra webhook. Bạn c
 
 ### Giao diện
 
-Ảnh chụp từ môi trường cục bộ với dữ liệu mẫu. Các token truy cập đã được che.
+Ảnh giao diện sử dụng dữ liệu mẫu. Liên kết quản lý chứa thông tin truy cập nên không được hiển thị.
 
 #### Trang chủ
 
