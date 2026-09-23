@@ -60,53 +60,53 @@ Updating rules affects future requests; earlier receipts retain their original r
 <a id="tieng-viet"></a>
 ## Tiếng Việt
 
-HookCheck là công cụ gỡ lỗi webhook cho lập trình viên. Tạo hộp thư nhận webhook, gửi sự kiện, rồi xem chính xác dữ liệu đã đến và lý do từng điều kiện kiểm tra đạt hoặc không đạt.
+HookCheck giúp lập trình viên tiếp nhận và kiểm tra webhook. Bạn có thể tạo một hộp thư tạm, gửi yêu cầu đến địa chỉ riêng của hộp thư, rồi xem nội dung thực nhận cùng kết quả kiểm tra cho từng quy tắc.
 
-**Triển khai:** Ứng dụng đầy đủ đã được triển khai trên Google Cloud với HTTPS, PostgreSQL, giám sát, sao lưu và quy trình phục hồi đã được kiểm tra. Quyền truy cập hiện còn giới hạn nên chưa có bản dùng thử công khai. Repo này giới thiệu sản phẩm; mã nguồn ứng dụng được duy trì riêng tư.
+**Triển khai:** HookCheck đang chạy trên Google Cloud với HTTPS, PostgreSQL, hệ thống giám sát và sao lưu. Quy trình phục hồi đã được kiểm chứng. Môi trường hiện giới hạn quyền truy cập nên chưa có bản dùng thử công khai. Kho lưu trữ này giới thiệu sản phẩm; mã nguồn ứng dụng được quản lý riêng.
 
 ### Giao diện
 
-Ảnh chụp từ phiên chạy local với các sự kiện giả lập. Token truy cập đã được che.
+Ảnh chụp từ môi trường cục bộ với dữ liệu mẫu. Các token truy cập đã được che.
 
 #### Trang chủ
 
 ![Trang chủ HookCheck](assets/home.png)
 
-#### Thiết lập điều kiện kiểm tra
+#### Thiết lập quy tắc kiểm tra
 
-![Thiết lập yêu cầu trường JSON /order/id](assets/expectations.png)
+![Quy tắc yêu cầu trường JSON /order/id](assets/expectations.png)
 
-#### Kiểm tra request
+#### Chi tiết webhook đã nhận
 
-| Thiếu trường bắt buộc | Request hợp lệ |
+| Thiếu trường bắt buộc | Đáp ứng quy tắc |
 | --- | --- |
-| ![Điều kiện không đạt vì thiếu mã đơn hàng](assets/request-fail.png) | ![Điều kiện đạt và cả hai request vẫn có trong lịch sử](assets/request-pass.png) |
+| ![Quy tắc không đạt vì thiếu mã đơn hàng](assets/request-fail.png) | ![Quy tắc đạt; cả hai lần gửi vẫn có trong lịch sử](assets/request-pass.png) |
 
 ### Bạn có thể làm gì
 
-- Tạo hộp thư nhận webhook tạm thời mà không cần tài khoản
-- Xem body gốc và metadata của request, kể cả JSON lỗi định dạng và dữ liệu nhị phân
-- Đặt điều kiện kiểm tra HTTP method, header và trường JSON
-- Xem lịch sử request cùng bộ điều kiện và kết quả tại thời điểm nhận
-- Phân quyền riêng giữa gửi webhook và xem hoặc quản lý hộp thư
-- Tự hết hạn, xóa dữ liệu và giới hạn số request cùng dung lượng lưu trữ
+- Tạo hộp thư nhận webhook tạm thời mà không cần đăng ký tài khoản
+- Xem nguyên nội dung và thông tin của yêu cầu, kể cả JSON không hợp lệ hoặc dữ liệu nhị phân
+- Thiết lập quy tắc cho phương thức HTTP, header và trường JSON
+- Xem lại từng yêu cầu cùng quy tắc và kết quả được ghi nhận tại thời điểm nhận
+- Dùng hai địa chỉ riêng cho việc gửi webhook và quản lý hộp thư
+- Chủ động xóa dữ liệu; hộp thư tự hết hạn và có giới hạn về số yêu cầu, dung lượng
 
-### Một phiên gỡ lỗi điển hình
+### Cách sử dụng
 
-1. Tạo hộp thư và lưu liên kết quản lý bí mật.
-2. Đặt điều kiện mong đợi rồi gửi webhook đến địa chỉ nhận.
-3. Xem request và kết quả từng điều kiện trên giao diện web.
-4. Sửa bên gửi và so sánh sự kiện mới với lần gửi lỗi trước đó.
+1. Tạo hộp thư và lưu liên kết quản lý riêng tư.
+2. Đặt quy tắc mong đợi, sau đó gửi webhook đến địa chỉ nhận.
+3. Xem nội dung yêu cầu và kết quả từng quy tắc trên giao diện web.
+4. Sửa hệ thống gửi webhook rồi so sánh lần gửi mới với lần lỗi trước đó.
 
-Thay đổi điều kiện chỉ ảnh hưởng đến các request nhận sau đó; kết quả cũ vẫn được giữ nguyên.
+Khi bạn thay đổi quy tắc, các lần gửi trước vẫn giữ nguyên kết quả ban đầu.
 
-### Không chỉ là bản mẫu
+### Điểm nổi bật về kỹ thuật
 
-- **Giữ đúng dữ liệu nhận:** Lưu nguyên byte gốc qua bảy HTTP method, kể cả JSON lỗi định dạng và payload nhị phân. Mỗi request giữ bộ điều kiện và kết quả lúc được nhận, nên việc sửa điều kiện sau đó không làm thay đổi lịch sử.
-- **Quyền truy cập tách biệt:** Địa chỉ nhận webhook không cho phép xem dữ liệu. Một liên kết bí mật riêng kiểm soát quyền truy cập; nội dung nhận được chỉ hiển thị dưới dạng văn bản trơ hoặc base64.
-- **Dữ liệu nhất quán khi có tải:** Giao dịch PostgreSQL ghi request, kết quả kiểm tra và quota cùng nhau. Dịch vụ chỉ xác nhận đã nhận sau khi giao dịch được commit.
-- **Triển khai trên cloud:** Ứng dụng đóng gói container chạy qua HTTPS, có cơ sở dữ liệu lưu trữ lâu dài và hệ thống giám sát. Một bản triển khai Kubernetes riêng cũng chạy được cùng luồng webhook và giữ dữ liệu sau khi khởi động lại VM.
-- **Có thể phục hồi dữ liệu:** Quy trình quay về image ứng dụng cũ và khôi phục từ bản sao lưu cơ sở dữ liệu mã hóa đã được thực hiện với các request giả lập được giữ nguyên.
+- **Giữ nguyên dữ liệu gốc:** HookCheck lưu chính xác các byte nhận được qua bảy phương thức HTTP, kể cả JSON không hợp lệ và dữ liệu nhị phân. Quy tắc và kết quả của mỗi lần gửi được lưu cùng yêu cầu, nên lịch sử không thay đổi khi bạn chỉnh sửa quy tắc.
+- **Tách biệt quyền truy cập:** Địa chỉ nhận webhook không thể dùng để xem dữ liệu. Việc xem và quản lý hộp thư cần một liên kết bí mật riêng. Hệ thống chỉ hiển thị nội dung dưới dạng văn bản hoặc base64, không thực thi nội dung đó.
+- **Ghi nhận nhất quán:** PostgreSQL ghi yêu cầu, kết quả kiểm tra và số lượt đã dùng trong hạn mức bằng cùng một giao dịch. HookCheck chỉ xác nhận đã nhận sau khi dữ liệu được lưu thành công.
+- **Triển khai trên cloud:** Ứng dụng chạy trong container qua HTTPS, cùng PostgreSQL và hệ thống giám sát. Một môi trường Kubernetes độc lập cũng đã chạy thành công luồng webhook và giữ nguyên dữ liệu sau khi khởi động lại máy chủ.
+- **Khả năng phục hồi:** Việc trở về phiên bản ứng dụng trước và khôi phục cơ sở dữ liệu từ bản sao lưu mã hóa đã được kiểm chứng bằng dữ liệu mẫu.
 
 **Công nghệ:** TypeScript, Node.js, Fastify, PostgreSQL, Nunjucks, Docker, Playwright, GitHub Actions, Google Cloud, Kubernetes, Terraform.
 
